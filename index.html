@@ -22,6 +22,7 @@
 
       <div class="row justify-content-md-center">
         <div class="col-md-4">
+          <div id="alert" class="alert alert-danger" role="alert" style="display: none;"></div>
           <form>
             <div class="mb-4">
               <label for="query">Nummerplade eller stelnummer</label>
@@ -71,10 +72,11 @@
       $(document).ready(function () {
         $('form').submit(function (e) {
           e.preventDefault();
+          $('#alert').hide();
           $('#result').hide();
           $('#spinner').show();
           var query = $('input').val();
-          fetch('https://api.staging.connectedcars.io/graphql', {
+          fetch('https://api.connectedcars.io/graphql', {
             method: 'POST',
             body: JSON.stringify({
               operationName: 'LookupConnectedVehicle',
@@ -85,6 +87,16 @@
           }).then(function (res) {
             return res.json();
           }).then(function (data) {
+            if (data.errors) {
+              if (data.errors[0].type === 'input-invalid') {
+                $('#alert').text('Indtastningen er ikke gyldig!');
+              } else {
+                $('#alert').text('Noget gik galt, prøv igen.');
+              }
+              $('#spinner').hide();
+              $('#alert').show();
+              return;
+            }
             var vin = null;
             var supported = null;
             var connected = null;
