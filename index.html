@@ -80,7 +80,7 @@
           var query = $('input').val();
           $.ajax({
             type: 'POST',
-            url: 'https://api.staging.connectedcars.io/graphql', 
+            url: 'https://api.connectedcars.io/graphql', 
             data: JSON.stringify({
               operationName: 'LookupConnectedVehicle',
               query: 'query LookupConnectedVehicle($query: String!) { lookupConnectedVehicle(country: dk, query: $query) { vin, supported, connected, activated } }',
